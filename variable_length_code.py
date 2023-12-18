@@ -8,9 +8,7 @@
 # To decode:
 # python variable_length_code.py decode informatizing cragginess heterokont flattener spetznazes pomeroys circummured
 # The printed string is the encoded/decoded sentence
-import numpy as np
 import pandas as pd
-import struct
 import collections
 import sys
 import time
