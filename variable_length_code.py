@@ -4,20 +4,21 @@
 # original sentence conveys less than 18 bits per word because some words are
 # more common than others.
 # To encode:
-# python variable_length_code.py encode o that this too too solid flesh would melt
+# python filename.py encode o that this too too solid flesh would melt
 # To decode:
-# python variable_length_code.py decode informatizing cragginess heterokont flattener spetznazes pomeroys circummured
+# python filename.py decode fruitbearing chansonnier factorable disproportionately pelota meselry brompicrin
 # The printed string is the encoded/decoded sentence
 import pandas as pd
 import collections
 import sys
 import time
 
-SIMPLE_WORDS = 2**18
+NUM_BITS = 18
+SIMPLE_WORDS = 2**NUM_BITS
 
 # word_freqs.csv taken from https://github.com/harshnative/words-dataset
 freqs = pd.read_csv('word_freqs.csv').drop('index', axis=1).set_index('word')
-legal = pd.read_csv('dictionary.txt', names=['word']) # Collins Scrabble Words 2019
+legal = pd.read_csv('words_alpha.txt', names=['word']) # https://websites.umich.edu/~jlawler/wordlist.html
 legal['word'] = legal['word'].str.lower()
 legal = legal.set_index('word')
 table = freqs.reset_index()
@@ -118,10 +119,10 @@ def encode(sentence):
     for word in sentence:
         x = encode_word(word)
         binary += encode_word(word)
-    binary = binary + '0'*(18-len(binary) % 18)
+    binary = binary + '0'*(NUM_BITS-len(binary) % NUM_BITS)
     out = []
-    for i in range(len(binary)//18):
-        eighteen_bits = binary[18*i:18*(i+1)]
+    for i in range(len(binary)//NUM_BITS):
+        eighteen_bits = binary[NUM_BITS*i:NUM_BITS*(i+1)]
         out.append(legal['word'].iloc[int(eighteen_bits, 2)])
     return ' '.join(out)
 
@@ -131,7 +132,7 @@ def decode(sentence):
     for word in sentence:
         word_index = (legal[legal['word'] == word].index)[0]
         word_binary = bin(word_index)[2:]
-        binary += word_binary.rjust(18, '0')
+        binary += word_binary.rjust(NUM_BITS, '0')
     temp = decode_bits(binary)
     if ';' in temp:
         return ' '.join(temp[:temp.index(';')])
