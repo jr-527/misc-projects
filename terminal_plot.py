@@ -280,5 +280,5 @@ def plot(x, y=None, dummy_arg=_dummy, width=None, height=None, stem=False, retur
     print(text)
     return None
 
-horizontal_bar_chart([x**2 for x in range(5)], width=16)
-plot([x**2 for x in range(5)], width=16)
+# horizontal_bar_chart([x**2 for x in range(5)], width=16)
+# plot([x**2 for x in range(5)], width=16)
