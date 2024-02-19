@@ -8,7 +8,7 @@ round_to_width(1234,3) -> '1e3'
 round_to_width(3.1415,3) -> '3.1'
 round_to_width(-3.1415,3) -> '-3 '
 
-It's also Python 2.6 compatible, and all fits in one file that can
+It's also Python 2.7 compatible, and all fits in one file that can
 be copy-pasted into a terminal, so it works anywhere.
 
 License:
