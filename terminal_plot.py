@@ -318,7 +318,7 @@ def horizontal_bar_chart(x, y=None, dummy_arg=_dummy, width=None, return_text=Fa
     print(text[:-1])
     return None
 
-def plot(x, y=None, dummy_arg=_dummy, width=None, height=None, stem=False, return_text=False):
+def plot(x, y=None, dummy_arg=_dummy, width=None, height=None, stem=False, return_text=False, xlim=None, ylim=None):
     '''
     This function makes a plot using plain text, ie
     >>> plot([math.cos(i*.5) for i in range(41)], width=40, height=9)
@@ -351,6 +351,10 @@ def plot(x, y=None, dummy_arg=_dummy, width=None, height=None, stem=False, retur
           Good for histograms, bar charts, and discrete data.
     return_text: If False, this prints to console and returns None. If True,
                  prints nothing and returns the string that would be printed.
+    xlim: None or a tuple (or equivalent) in the form (x_min, x_max) that gives
+          upper and lower bounds for the x-axis. Any values that are None will
+          be auto-detected from the data.
+    ylim: Same as xlim, but for the y-axis.
     '''
     if dummy_arg is not _dummy: # Python 2 compatible
         raise TypeError('plot takes 1-2 positional arguments but 3 were given.')
@@ -380,14 +384,28 @@ def plot(x, y=None, dummy_arg=_dummy, width=None, height=None, stem=False, retur
             x, y = zip(*x) # unzip list of tuples
             x, y = list(x), list(y)
     x_min, x_max = min(x), max(x)
+    if xlim is not None:
+        if xlim[0] is not None:
+            x_min = xlim[0]
+        if xlim[1] is not None:
+            x_max = xlim[1]
     x_range = x_max - x_min
     y_min, y_max = min(y), max(y)
+    if ylim is not None:
+        if ylim[0] is not None:
+            y_min = ylim[0]
+        if ylim[1] is not None:
+            y_max = ylim[1]
     y_range = y_max - y_min
     # we want a list in the form list[y][x]
     arr = [[0]*width for _ in range(height)]
+    print(x_min, x_max)
+    print(y_min, y_max)
     for x_pos, y_pos in zip(x, y):
         # in older Python versions, round always returns a floating point value
         # so we cast to int
+        if not ((x_min <= x_pos and x_pos <= x_max) and (y_min <= y_pos and y_pos <= y_max)):
+            continue
         x_coord = int(round((x_pos - x_min)/(x_range*1.0)*(width-1)))
         y_coord = int(round((y_pos - y_min)/(y_range*1.0)*(height-1)))
         if stem:
